@@ -7,21 +7,27 @@ namespace Audacia.Commands.Decorators
     /// <summary>
     /// <see cref="ICommandHandler{T}"/> implementation to add the functionality to catch exceptions and return the exception details as part of the <see cref="CommandResult"/>.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type of the command.</typeparam>
     public class ExceptionHandlingDecorator<T> : ICommandHandler<T> where T : ICommand
     {
         private readonly ICommandHandler<T> _wrappedHandler;
 
+        /// <summary>
+        /// Initializes an instance of <see cref="ExceptionHandlingDecorator{T}"/>.
+        /// </summary>
+        /// <param name="wrappedHandler">The command handler to wrap in exception handling.</param>
         public ExceptionHandlingDecorator(ICommandHandler<T> wrappedHandler)
         {
             _wrappedHandler = wrappedHandler;
         }
 
-        public async Task<CommandResult> HandleAsync(T command, CancellationToken cancellationToken = new CancellationToken())
+        /// <inheritdoc />
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031", Justification = "Catches all exceptions by design.")]
+        public async Task<CommandResult> HandleAsync(T command, CancellationToken cancellationToken = default)
         {
             try
             {
-                return await _wrappedHandler.HandleAsync(command, cancellationToken);
+                return await _wrappedHandler.HandleAsync(command, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception exception)
             {
@@ -33,22 +39,28 @@ namespace Audacia.Commands.Decorators
     /// <summary>
     /// <see cref="ICommandHandler{T,TOutput}"/> implementation to add the functionality to catch exceptions and return the exception details as part of the <see cref="CommandResult"/>.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="TOutput"></typeparam>
+    /// <typeparam name="T">The type of the command.</typeparam>
+    /// <typeparam name="TOutput">The type of the output.</typeparam>
     public class ExceptionHandlingDecorator<T, TOutput> : OutputCommandHandlerBase<T, TOutput> where T : ICommand
     {
         private readonly ICommandHandler<T, TOutput> _wrappedHandler;
 
+        /// <summary>
+        /// Initializes an instance of <see cref="ExceptionHandlingDecorator{T, TOutput}"/>.
+        /// </summary>
+        /// <param name="wrappedHandler">The command handler to wrap in exception handling.</param>
         public ExceptionHandlingDecorator(ICommandHandler<T, TOutput> wrappedHandler)
         {
             _wrappedHandler = wrappedHandler;
         }
 
-        public override async Task<CommandResult<TOutput>> HandleAsync(T command, CancellationToken cancellationToken = new CancellationToken())
+        /// <inheritdoc />
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031", Justification = "Catches all exceptions by design.")]
+        public override async Task<CommandResult<TOutput>> HandleAsync(T command, CancellationToken cancellationToken = default)
         {
             try
             {
-                return await _wrappedHandler.HandleAsync(command, cancellationToken);
+                return await _wrappedHandler.HandleAsync(command, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception exception)
             {

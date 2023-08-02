@@ -1,16 +1,43 @@
-# Audacia.Commands.Validation
-#### **NOTE**: This library is intended to make validation commands easier, but you can use it for any class object.
+# Overview
 
-## Pre-Installation
-Make sure you have setup the Audacia VSTS nuget registry.
+`Audacia.Commands` is an implementation of the command pattern. It includes functionality to validate and execute commands.
 
-## Installation
-```powershell
-# installation with nuget
-Install-Package Audacia.Commands
+# Usage
+
+## Command and Command Handlers
+
+A 'command' is generally a Plain Old CLR Object (POCO) that represents some kind of action that needs to be performed (e.g. `AddCustomer`). Each command should implement the `ICommand` interface, which is a marker interface.
+
+In order to execute a command the `ICommandHandler<T>` interface must be implemented, where the generic parameter `T` is the type of the command. For example using the `AddCustomer` example above, the handler implementation would look like this:
+```csharp
+public class AddCustomerHandler : ICommandHandler<AddCustomer>
+{
+     // Implementation here
+}
 ```
 
-## Example usage:
+## Results
+
+The result of a command is communicated back to the caller via a `CommandResult` (or `CommandResult<T>`) object. `CommandResult` contains a boolean flag indicating whether execution of the command was successful or not, as well as a collection of errors.
+
+Some commands need to return data to the caller, which can be achieved by returning a `CommandResult<T>` object, where `T` is the type of data being returned. For example, if the command is adding a new entity you may need to return the ID of the newly created database record, in which case you may return a `CommandResult<int>`.
+
+## Dispatching Commands
+
+In order to execute a command you can consume an `ICommandHandler<T>` instance directly. The `ICommandDispatcher` interface (and its default implementation `CommandDispatcher`) provides another mechanism to execute commands. `ICommandDispatcher` can be passed a command of any type and it will create the necessary handler and execute it. Creation of a handler requires an implementation of `ICommandHandlerFactory`.
+
+### Command Handling Pipelines
+
+Cross-cutting concerns can be addressed using generic handlers. `ExceptionHandlingDecorator` and `ValidatingDecorator` are provided implementations.
+
+## Validators
+
+Validation can be performed by implementing the `ICommandValidator<T>` interface and injecting this into the handler. Validation is discussed in more depth below.
+
+## Audacia.Commands.Validation
+**NOTE**: This part of the library is intended to make validation commands easier, but you can use it for any class object.
+
+### Example usage:
 ```csharp
 using Audacia.Commands.Validation;
 ...
@@ -32,10 +59,10 @@ return await model.ToCommandResultAsync();
 
 ---
 
-## IValidationModel
+### IValidationModel
 A validation model is a collection of validation results for provided class properties and validation logic.
 
-### Properties
+#### Properties
 - **AllErrors** `IEnumerable<string>`
 All validation errors regardless of property.
 
@@ -49,7 +76,7 @@ Is true if there are no errors.
 - **ModelName** `string`
 User friendly model name.
 
-### Methods
+#### Methods
 - **IsModelNull** `bool IsModelNull()`
 Checks if the model is null,
 Adds a validation error when null.
@@ -65,10 +92,10 @@ Appends any validation errors to the command result.
 
 ---
 
-## Validation Property
+### Validation Property
 A validation property is a model to validate a single property.
 
-### Properties
+#### Properties
 - **ModelName** `string`
 User friendly model name.
 
@@ -81,7 +108,7 @@ User friendly property name.
 - **Value** `TProperty`
 Property value.
 
-### Methods
+#### Methods
 - **AddError** `void AddError(string message)`
 Adds a validation error to the property.
 
@@ -90,7 +117,7 @@ Creates a child validation property on a property object.
 
 ---
 
-## Extensions Methods
+### Extensions Methods
 
 - **AlreadyExists** `AlreadyExists(bool exists)`
 Adds a model error explaining the value already exists.
@@ -131,3 +158,7 @@ Validates that the property is less than the given value.
 
 - **MustBeLessThanOrEqualTo** `MustBeLessThanOrEqualTo(TProperty number)` (IComparable)
 Validates that the property is less than or equal to the given value.
+
+# Contributing
+
+We welcome contributions! Please feel free to check our [Contribution Guidlines](https://github.com/audaciaconsulting/.github/blob/main/CONTRIBUTING.md) for feature requests, issue reporting and guidelines.
