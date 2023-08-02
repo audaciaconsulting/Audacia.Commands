@@ -22,9 +22,9 @@ namespace Audacia.Commands.Decorators
         }
 
         /// <inheritdoc />
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031", Justification = "Catches all exceptions by design.")]
         public async Task<CommandResult> HandleAsync(T command, CancellationToken cancellationToken = default)
         {
-#pragma warning disable CA1031 // Do not catch general exception types
             try
             {
                 return await _wrappedHandler.HandleAsync(command, cancellationToken).ConfigureAwait(false);
@@ -33,7 +33,6 @@ namespace Audacia.Commands.Decorators
             {
                 return CommandResult.Failure($"Execution of command {typeof(T).Name} failed due to exception: {exception.Message}");
             }
-#pragma warning restore CA1031 // Do not catch general exception types
         }
     }
 
@@ -56,9 +55,9 @@ namespace Audacia.Commands.Decorators
         }
 
         /// <inheritdoc />
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031", Justification = "Catches all exceptions by design.")]
         public override async Task<CommandResult<TOutput>> HandleAsync(T command, CancellationToken cancellationToken = default)
         {
-#pragma warning disable CA1031 // Do not catch general exception types
             try
             {
                 return await _wrappedHandler.HandleAsync(command, cancellationToken).ConfigureAwait(false);
@@ -67,7 +66,6 @@ namespace Audacia.Commands.Decorators
             {
                 return CommandResult.Failure<TOutput>($"Execution of command {typeof(T).Name} failed due to exception: {exception.Message}");
             }
-#pragma warning restore CA1031 // Do not catch general exception types
         }
     }
 }
