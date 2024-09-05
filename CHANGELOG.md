@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.0.0 - 2020-04-30
+## 1.1.0.0 - 2023-08-02
 ### Added
 - No new functionality added
 
