@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.3 - 2024-11-20
+### Added
+- No new functionality added
+
+### Changed
+- No functionality changed
+
+### Fixed
+- Upgraded vulnerable versions ([40e414f](https://github.com/audaciaconsulting/Audacia.Commands/commit/40e414f7cb92706e7185f328bde93771df077c3f))
+
 ## 1.1.2 - 2024-09-05
 ### Added
 - CHANGELOG.md file added
