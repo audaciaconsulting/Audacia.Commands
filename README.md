@@ -57,7 +57,7 @@ if(!model.IsModelNull())
           .MustBeGreaterThan(3);
 }
 
-return await model.ToCommandResult();
+return model.ToCommandResult();
 ```
 
 ---
