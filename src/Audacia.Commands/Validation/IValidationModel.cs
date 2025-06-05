@@ -22,12 +22,12 @@ namespace Audacia.Commands.Validation
         IEnumerable<string> AllErrors { get; }
 
         /// <summary>
-        /// Gets a value indicating whether or not there are any errors.
+        /// Gets a value indicating whether there are any errors.
         /// </summary>
         bool IsValid { get; }
         
         /// <summary>
-        /// Gets a user friendly model name.
+        /// Gets a user-friendly model name.
         /// </summary>
         string ModelName { get; }
 
@@ -49,7 +49,7 @@ namespace Audacia.Commands.Validation
         /// Appends any validation errors to the command result.
         /// </summary>
         /// <returns>A <see cref="CommandResult"/>.</returns>
-        Task<CommandResult> ToCommandResultAsync();
+        CommandResult ToCommandResult();
     }
 
     /// <summary>
@@ -62,8 +62,8 @@ namespace Audacia.Commands.Validation
         /// Creates a validation property.
         /// </summary>
         /// <typeparam name="TProperty">Type of the member being validated.</typeparam>
-        /// <param name="property">Expresssion referencing the member being validated.</param>
-        /// <param name="displayName">User friendly member name.</param>
+        /// <param name="property">Expression referencing the member being validated.</param>
+        /// <param name="displayName">User-friendly member name.</param>
         /// <returns>A validation property.</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Name best represents the purpose of the method.")]
         ValidationProperty<TProperty> Property<TProperty>(Expression<Func<TModel, TProperty>> property, string? displayName = null);
