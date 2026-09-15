@@ -14,6 +14,7 @@ namespace Audacia.Commands.Validation
     public class ValidationModel<TModel> : ValidationBase, IValidationModel<TModel> where TModel : class
     {
         private readonly TModel _model;
+
         private readonly IDictionary<string, HashSet<string>> _errors;
 
         /// <summary>
@@ -21,9 +22,11 @@ namespace Audacia.Commands.Validation
         /// </summary>
         /// <param name="model">The <typeparamref name="TModel"/> instance to validate.</param>
         /// <param name="modelName">The name of the model.</param>
-        public ValidationModel(TModel model, string modelName)
+        public ValidationModel(
+            TModel model,
+            string modelName)
         {
-            ModelName = string.IsNullOrWhiteSpace(modelName) 
+            ModelName = string.IsNullOrWhiteSpace(modelName)
                 ? typeof(TModel).Name.SplitCamelCase()
                 : modelName;
             _model = model;
@@ -37,13 +40,16 @@ namespace Audacia.Commands.Validation
         public bool IsValid => !_errors.Any();
 
         /// <inheritdoc />
-        public IDictionary<string, IEnumerable<string>> ModelErrors => _errors as IDictionary<string, IEnumerable<string>> ?? new Dictionary<string, IEnumerable<string>>();
+        public IDictionary<string, IEnumerable<string>> ModelErrors =>
+            _errors as IDictionary<string, IEnumerable<string>> ?? new Dictionary<string, IEnumerable<string>>();
 
         /// <inheritdoc />
         public IEnumerable<string> AllErrors => _errors.SelectMany(kvp => kvp.Value).ToArray();
 
         /// <inheritdoc />
-        public void AddModelError(string propertyName, string errorMessage)
+        public void AddModelError(
+            string propertyName,
+            string errorMessage)
         {
             if (propertyName == null)
             {
@@ -77,22 +83,24 @@ namespace Audacia.Commands.Validation
 
             return false;
         }
-        
+
         /// <inheritdoc />
-        public ValidationProperty<TProperty> Property<TProperty>(Expression<Func<TModel, TProperty>> property, string? displayName = null)
-        { 
+        public ValidationProperty<TProperty> Property<TProperty>(
+            Expression<Func<TModel, TProperty>> property,
+            string? displayName = null)
+        {
             if (property == null) throw new ArgumentNullException(nameof(property));
 
             var propertyName = GetNameForProperty(property);
-            var value = property.Compile()(_model); 
+            var value = property.Compile()(_model);
 
             return new ValidationProperty<TProperty>(this, propertyName, displayName, value);
         }
 
         /// <inheritdoc />
-        public Task<CommandResult> ToCommandResultAsync()
+        public CommandResult ToCommandResult()
         {
-            return Task.FromResult(new CommandResult(IsValid, AllErrors));
+            return new CommandResult(IsValid, AllErrors);
         }
     }
 }
